@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!-- 
+    ITC5202 Project 2  -- Prepared by: Professor : Shahdad
+    The objective of this sample code to get students familiar with reddit API prior to start the project
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="reddit copy.css">
+    <title>Document</title>
+    <!-- step 1: jQuery CDN to the project-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="topnav">
+        <img src="https://clipart-library.com/image_gallery2/Reddit-PNG-File.png" height="90" />
+        <div class="search-container">
+          <form action="/action_page.php">
+            <input type="text" id='searchInput2'placeholder="Subreddit" name="search">
+            <input type="text" id='searchInput1'placeholder="Keyword" name="search">
+            <button id='textsearch'>SEARCH</button>
+          </form>
+        </div>
+      </div>
+
+    <div id="locs"></div>
+    <script>
+    $('#textsearch').click(function(event) {
+		event.preventDefault(); // Prevent page from refreshing
+		var subreddit = $('#searchInput2').val();  
+        var posttile = $('#searchInput1').val(); 
+      //  searchIn = "post"
+        if($('#comment').click) {
+            searchIn = "comment"
+        }
+        searchIn = "comment"
+        output =  "";  
+        $.getJSON("https://api.reddit.com/r/"+subreddit+"/search?q="+posttile+"&type="+searchIn+"&sort=title&sort_type=asc", function(data) { 
+            console.log(data);
+            var topThreePosts = data.data.children.slice(0,3);
+            $.each(topThreePosts, function(i,item){
+                console.log(item);
+                output +=    "<div class='container'>"
+                    output +=  "<div class='card'>"
+                        if( item.data.image == "" || item.data.image == null )
+                        {
+                            url =  'https://imgs.search.brave.com/okLBNfqxl80LUvjaMp_EYbQ0Cy8kAqOdwWMWKAC82U8/rs:fit:1125:1125:1/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzRhL2Nk/L2QyLzRhY2RkMjcw/NGIwMzM5YzFhNDdl/YTdhY2I3MzMyODJl/LnBuZw'
+                            output +=  "<div class='img-container' style=' background-image: url("+url+");'> "
+                            
+                        }
+                        else{
+                            output +=  "<div class='img-container' style=' background-image: url("+item.data.image+");'> "
+
+                            }                   
+                            output +=  "</div>";
+                           
+                        output +=  "<div class='card-content'>"
+                            output += " <h2>Hello</h2>"
+                            output += " <h1>"+ item.data.title+"</h1>"
+                            output +=  "<p class='excerpt'>"+ item.data.author+"</p>"
+                            output +=  "<p>"+ item.data.score+"</br></p>";
+
+                            if( item.data.created_utc == "" || item.data.created_utc == null )
+                        {
+                            output +=  "<p class='author'>--/--/----</p>"
+                        }
+                        else{
+                            var createdUtc = item.data.edited;
+                            var utcDate = new Date(createdUtc * 1000);
+                            var localDate = utcDate.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });;
+                            output +=  "<p class='author'>"+localDate+"</p>"
+                            }                     
+                            output +=  "</div>";
+                            output +=  "<h2>Top 3 commnets</h2>";
+
+
+                            $.getJSON("https://api.reddit.com" + item.data.permalink + ".json?limit=3", function(data) { 
+                                console.log(data);
+                                var topThreePosts = data[0].data.children.slice(0,3);
+                                $.each(topThreePosts, function(i,item){
+                                    console.log(item);
+
+                                    output +=  "<h2>"+item.data.author+"</h2>";
+
+
+                                });
+                            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           
+                        
+                         output +=  " </div> </div> </div>"
+                 $("#locs").html(output);
+            });
+});
+    });
+    </script>
+</body>
+</html>

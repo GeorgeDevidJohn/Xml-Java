@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="redditstep5.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="topnav">
+        <img src="https://clipart-library.com/image_gallery2/Reddit-PNG-File.png" height="90" />
+        <div class="search-container">
+          <form action="/action_page.php">
+            <input type="text" id='searchInput1'placeholder="Keyword" name="search">
+            <button id='textsearch'>SEARCH</button>
+          </form>
+        </div>
+      </div>
+
+    <div id="locs"></div>
+    <script>
+           $('#textsearch').click(function(event) {
+		event.preventDefault(); // Prevent page from refreshing
+        var Keyword = $('#searchInput1').val(); 
+        output =  "";  
+        $('#locs').html("");
+        fetch("https://api.reddit.com/search?q="+Keyword+"&type=user&limit=100")
+        .then(response=>response.json())
+        .then(data=>{
+            var users = data.data.children;
+            users.sort((a,b) =>{
+                return b.data.comment_karma-a.data.comment_karma;
+        });
+
+        var topuser = users.slice(0,10);
+
+        topuser.forEach(user => {
+        var name = user.data.name;
+        var followers = user.data.accept_followers;
+        var subscribers = user.data.subreddit.subscribers;
+        var id = user.data.id;
+        var icon = user.data.icon_img;
+        var comment = user.data.comment_karma;
+
+        var output=""; 
+        output+=    "<div class='center'>"
+        output+=  "<div class='card'>"
+            output+=   "<div class='profile-container'>"
+                output+= " <h4  class='ID' style='font-size: 24px;'> ID : " + id + "</h4>"
+                output+= "<img src='"+icon+"'>"
+                output+=   "</div>"
+    
+                output+=   "<div class='name-container'>"
+                    output+=  "<h2>"+name+"</h2>"
+                    output+=   "<p class='comment'>Comment : " + comment + ".</p>"
+                    output+=  "</div>"
+    
+                    output+=  "<div class='details-container'>"
+                        output+=  "<div class='posts-container'>"
+                            output+=   "<h4  class='social_media' style='font-size: 24px;'> " + followers + "</h4>"
+                            output+=   "<p class='social' style='font-size: 20px;'>Followers</p>"
+                            output+=  " </div>"
+      
+                        
+      
+                                output+=    "<div class='following-container'>"
+                                    output+= " <h4  class='social_media' style='font-size: 24px;'>" + subscribers + "</h4>"
+                                    output+=  " <p class='social' style='font-size: 20px;'>Subscribers</p>"
+                                    output+=  " </div></div></div></div>"
+
+        $('#locs').append(output);
+    });
+})
+          
+        .catch(error => console.error(error));
+    });
+    </script>
+</body>
+</html>

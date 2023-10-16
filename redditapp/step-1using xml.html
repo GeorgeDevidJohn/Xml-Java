@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<title> Aashish q2</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+    #demo{
+        padding-left: 40%;
+    }
+    body{
+        background-color:azure;
+    }
+    td:hover{
+        background-color:lightgrey;
+    }
+    th{
+        color:black;
+        border: 1px solid silver;
+        background-color:bisque;
+        font-weight: bolder;
+        font-size:large;
+        }
+    td{
+        background-color:bisque;
+        border: solid 2px;
+        border: 1px solid silver;
+        align-self: center;
+    }
+    </style>
+</head>
+<div id="locs"></div>
+<script>
+var output = "";
+$.ajax({
+  url: "https://www.reddit.com/subreddits/search.xml?q=webdev&limit=5&sort=title&sort=asc",
+  type: "GET",
+  dataType: "xml",
+  success: function(xml){
+    $(xml).find("subreddit").each(function(){
+      var title = $(this).find("title").text();
+      var icon = $(this).find("icon_img").text();
+      var description = $(this).find("description").text();
+      var publicDescription = $(this).find("public_description").text();
+      var createdUTC = $(this).find("created_utc").text();
+      var url = $(this).find("url").text();
+      
+      output += "<h3>"+title+"</h3>";
+      output += "<img src='"+icon+"'></br>";
+      output += "<p>"+description+"</br></p>";
+      output += "<p>"+publicDescription+"</br></p>";
+      output += "<p>"+createdUTC+"</br></p>";
+      output += "<a href='"+url+"'>URL</br></a>";
+      
+      $("#locs").append(output);
+      output = "";
+    });
+  },
+  error: function(){
+    console.log("Error occurred while retrieving data");
+  }
+});
+</script>
+</script>
+</body>
+</html>
+<!--
+/********************************************************************************* *ITC5202 - Assignment 5 
+*	I declare that this assignment is my own work in accordance with Humber Academic Policy.   *  No part of this assignment has been copied manually or electronically from any other source *  (including web sites) or distributed to other students. 
+*  
+*	Name: Aashish Anand Cullopulli
+Student ID: N01542765 
+Date: 27/03/23
+* 
+********************************************************************************/-->

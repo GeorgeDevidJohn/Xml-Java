@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit Search</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="redditstep3.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="topnav">
+      <img
+        src="https://clipart-library.com/image_gallery2/Reddit-PNG-File.png"
+        height="90"
+      />
+      <div class="search-container">
+        <form action="/action_page.php">
+          <input
+            type="text"
+            id="subreddit"
+            placeholder="Subreddit"
+            name="search"
+          />
+          <input type="text" id="keyword" placeholder="Keyword" name="search" />
+          <button id="textsearch">SEARCH</button>
+        </form>
+      </div>
+    </div>
+    <div id="locs"></div>
+    <script>
+      $("#textsearch").click(function (event) {
+        event.preventDefault();
+        var subreddit = document.getElementById("subreddit").value;
+        var keyword = document.getElementById("keyword").value;
+        var url =
+          "https://api.reddit.com/r/" +
+          subreddit +
+          "/search?q=" +
+          keyword +
+          "&type=link&limit=100";
+
+        $.ajax({
+          url: url,
+          dataType: "json",
+          success: function (response) {
+            var posts = response.data.children
+              .sort(function (a, b) {
+                return b.data.score - a.data.score;
+              })
+              .slice(0, 3);
+              console.log(posts);
+            var resultsHtml = "";
+            for (var i = 0; i < posts.length; i++) { 
+              var post = posts[i].data;
+              var postHtml = "";
+              postHtml +=    "  <div class='card'>"
+                postHtml += "<div class='card-aside'>"
+                  
+              postHtml += "<a class='card-skill'>"+post.author+"</a>"
+               
+             
+              postHtml += "<a class='card-skill-sub'> Score  :  "+post.score+"</a>"
+              postHtml += "<a class='card-skill-sub'> Flair  :  "+post.link_flair_text+"</a>"      
+              postHtml += "</div>"
+
+              postHtml += "<div class='card-main'>"
+               postHtml += "<h3 class='card-title'><a>"+post.title+"</a></h3>"
+              if (post.thumbnail != "self" && post.thumbnail != "default") {
+                postHtml += "<img src='" + post.thumbnail + "'><br>";
+              }
+              var postUrl =
+                "https://api.reddit.com" + post.permalink + ".json?limit=3";
+              $.ajax({
+                url: postUrl,
+                dataType: "json",
+                success: function (postResponse) {
+                  var commentsHtml = "<h3>Top Comments:</h3>";
+                  var comments = postResponse[1].data.children
+                    .sort(function (a, b) {
+                      return b.data.score - a.data.score;
+                    })
+                    .slice(0, 3);
+                  for (var j = 0; j < comments.length; j++) {
+                    var comment = comments[j].data;
+                    commentsHtml +=  "<p class='card-excerpt'>"+comment.body+"</p>"
+                    commentsHtml += "<div class='card-meta'>"
+                      commentsHtml += "<div class='score'>"
+                        commentsHtml += "<i>Author : </i>"
+                        commentsHtml += "<a >"+comment.author+"</a>"
+                      commentsHtml += "</div>"
+                      commentsHtml += "<div class='score'>"
+                        commentsHtml += "<i> CREATED DATE : </i>"
+                        if( comment.created_utc == "" || comment.created_utc == null )
+                            {
+                              commentsHtml +=  "--/--/----"
+                            }
+                        else{
+                            var createdUtc = comment.created_utc;
+                            var utcDate = new Date(createdUtc * 1000);
+                            var localDate = utcDate.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });;
+                            commentsHtml +=  localDate;
+                            }   
+                       
+                            commentsHtml += "</div>"
+     
+                    if (
+                      comment.thumbnail != "self" &&
+                      comment.thumbnail != "default"
+                    ) {
+                      commentsHtml +=
+                        "<img src='" + comment.thumbnail + "'><br>";
+                    }
+                  }
+                  commentsHtml += "</div>"
+                  commentsHtml += "</div>"
+                  commentsHtml += "</div>"
+
+
+                  postHtml += commentsHtml;
+                 $("#locs").append(postHtml);
+                },
+                error: function (xhr, status, error) {
+                  alert("Error: " + error);
+                },
+              });
+              $("#locs").append(postHtml);
+            }
+           
+          },
+          error: function (xhr, status, error) {
+            alert("Error: " + error);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

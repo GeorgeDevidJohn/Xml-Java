@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- 
+    ITC5202 Project 2  -- Prepared by: Professor : Shahdad
+    The objective of this sample code to get students familiar swisth reddit API prior to start the project
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="redditstep4.css">
+    <title>Document</title>
+    <!-- step 1: jQuery CDN to the project-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="topnav">
+        <img src="https://clipart-library.com/image_gallery2/Reddit-PNG-File.png" height="90" />
+        <div class="search-container">
+          <form action="/action_page.php">
+            <input type="text" id='searchInput2'placeholder="Subreddit" name="search">
+            <input type="text" id='searchInput1'placeholder="Keyword" name="search">
+            <button id='textsearch'>SEARCH</button>
+          </form>
+        </div>
+      </div>
+
+    <div id="locs"></div>
+    <script>
+    $('#textsearch').click(function(event) {
+		event.preventDefault(); // Prevent page from refreshing
+		var subreddit = $('#searchInput2').val();  
+        var comment = $('#searchInput1').val(); 
+        output =  "";  
+        $.getJSON("https://api.pushshift.io/reddit/search/comment?q="+comment+"&subreddit="+subreddit+"&size=3&before = 3d5h", function(data) { 
+            console.log(data);
+            var topThreePosts = data.data.slice(0,3);
+            var sortData = topThreePosts.sort((a, b) => b.score - a.score);
+            $.each(sortData, function(i,item){
+                console.log(item);
+
+                         output +=    "  <div class='card'>"
+                            output += "<div class='card-aside'>"
+                        output += "<a class='card-skill'> "+item.id+"</a>"
+                        
+                        output += "</div>"
+
+                        output += "<div class='card-main'>"
+                        output += "<h3 class='card-title'><a>"+ item.author+"</a></h3>"
+                        output += "<p class='card-comment'>Comment : </p>"
+                        output += "<p class='card-excerpt'>"+item.body+"</p>"
+                        output += "<div class='card-meta'>"
+                        output += "<div class='score'>"
+                        output += "<i>SCORE : </i>"
+                        output += item.score
+                        output += "</div>"
+                        output += "<div class='score'>"
+                        output += "<i> CREATED DATE : </i>"
+                        if( item.created_utc == "" || item.created_utc == null )
+                            {
+                               output +=  "--/--/----"
+                            }
+                        else{
+                            var createdUtc = item.created_utc;
+                            var utcDate = new Date(createdUtc * 1000);
+                            var localDate = utcDate.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });;
+                            output +=  localDate;
+                            }   
+                       
+                        output += "</div>"
+                        output += "</div>"
+                        output += "</div>"
+
+                        output += "</div>"
+
+
+                 $("#locs").html(output);
+            });
+        });
+    });
+    </script>
+</body>
+</html>

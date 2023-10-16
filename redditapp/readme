@@ -1,0 +1,56 @@
+# ReadMe - Reddit User Search Web App
+
+This ReadMe file provides an overview of the HTML code for a Reddit user search web application. This web application allows users to search for Reddit users by a keyword and displays information about the top users based on their comment karma.
+
+## Table of Contents
+- [Project Description](#project-description)
+- [HTML Structure](#html-structure)
+- [JavaScript Functionality](#javascript-functionality)
+- [How to Use](#how-to-use)
+
+## Project Description
+
+This web application is designed to search for Reddit users and display information about the top users who match the search keyword. It uses the Reddit API to fetch user data and sort the results based on comment karma. The application provides information about each user's ID, comment karma, followers, and subscribers.
+
+## HTML Structure
+
+The HTML structure of the web application is as follows:
+
+- `<!DOCTYPE html>`: Specifies the document type.
+- `<html>`: The root element of the HTML document.
+- `<head>`: Contains metadata and links to external resources.
+- `<body>`: The main content of the web page.
+
+The `<head>` section includes the document's title, links to external stylesheets, and the jQuery library for JavaScript functionality.
+
+The `<body>` section contains the following elements:
+- A navigation bar with a Reddit logo and a search form.
+- A `div` element with the `id` "locs" where search results will be displayed.
+- A JavaScript code block that handles user input, fetches data from the Reddit API, and displays the results.
+
+## JavaScript Functionality
+
+The JavaScript code in this web application is responsible for the following functionality:
+
+- Captures user input when the "SEARCH" button is clicked.
+- Prevents the page from refreshing when the search button is clicked.
+- Retrieves data from the Reddit API based on the user's search keyword.
+- Sorts the retrieved user data based on comment karma.
+- Selects the top 10 users with the highest comment karma.
+- Displays information about each top user, including their ID, comment karma, followers, and subscribers, along with their profile picture.
+
+## How to Use
+
+To use this web application, follow these steps:
+
+1. Open the HTML file in a web browser.
+
+2. Enter a keyword in the search input field.
+
+3. Click the "SEARCH" button.
+
+4. The application will retrieve data from Reddit and display information about the top users matching the search keyword in the "locs" section of the page.
+
+5. You can view details about each user, including their ID, comment karma, followers, subscribers, and profile picture.
+
+This web application provides a user-friendly way to search for and explore top Reddit users based on their comment karma.

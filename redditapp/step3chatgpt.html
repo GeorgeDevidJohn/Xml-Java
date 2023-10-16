@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Reddit Search</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+</head>
+<body>
+	<h1>Reddit Search</h1>
+	<label for="subreddit">Enter subreddit:</label>
+	<input type="text" id="subreddit" name="subreddit"><br><br>
+	<label for="keyword">Enter keyword:</label>
+	<input type="text" id="keyword" name="keyword"><br><br>
+	<button onclick="searchReddit()">Search</button>
+	<div id="results"></div>
+	<script>
+function searchReddit() {
+			var subreddit = document.getElementById("subreddit").value;
+			var keyword = document.getElementById("keyword").value;
+			var url = "https://api.reddit.com/r/" + subreddit + "/search?q=" + keyword + "&type=link&limit=100";
+
+	$.ajax({
+	url: url,
+	dataType: "json",
+	success: function(response) {
+	var posts = response.data.children.sort(function(a, b) {
+		return b.data.score - a.data.score;
+		}).slice(0, 3);
+
+		var resultsHtml = "";
+		for (var i = 0; i < posts.length; i++) {
+		var post = posts[i].data;
+		var postHtml = "<h2>" + post.title + "</h2>";
+			postHtml += "<p>Author: " + post.author + ", Score: " + post.score + ", Flair: " + post.link_flair_text + "</p>";
+			if (post.thumbnail != "self" && post.thumbnail != "default") {
+				postHtml += "<img src='" + post.thumbnail + "'><br>";
+            }
+		var postUrl = "https://api.reddit.com" + post.permalink + ".json?limit=3";
+			$.ajax({
+			url: postUrl,
+			dataType: "json",
+			success: function(postResponse) {
+		var commentsHtml = "<h3>Top Comments:</h3>";
+			var comments = postResponse[1].data.children.sort(function(a, b) {
+			return b.data.score - a.data.score;
+			}).slice(0, 3);
+			for (var j = 0; j < comments.length; j++) {
+			var comment = comments[j].data;
+		commentsHtml += "<p>" + comment.body + "</p>";
+		commentsHtml += "<p>Author: " + comment.author + ", Date: " + new Date(comment.created_utc * 1000).toLocaleString() + "</p>";
+			if (comment.thumbnail != "self" && comment.thumbnail != "default") {
+			commentsHtml += "<img src='" + comment.thumbnail + "'><br>";
+				}
+				}
+			postHtml += commentsHtml;
+				$("#results").html(postHtml);
+			},
+							error: function(xhr, status, error) {
+								alert("Error: " + error);
+							}
+						});
+					}
+                },
+				error: function(xhr, status, error) {
+					alert("Error: " + error);
+				}
+			});
+		}
+				
+	</script>
+</body>
+</html>

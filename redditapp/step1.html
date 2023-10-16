@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- 
+    ITC5202 Project 2  -- Prepared by: Professor : Shahdad
+    The objective of this sample code to get students familiar with reddit API prior to start the project
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="redditstep1.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- step 1: jQuery CDN to the project-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="topnav">
+        <img src="https://clipart-library.com/image_gallery2/Reddit-PNG-File.png" height="90" />
+        <div class="search-container">
+          <form action="/action_page.php">
+            <input type="text" id='searchInput'placeholder="Subreddit" name="search">
+            <button id='textsearch'>SEARCH</button>
+          </form>
+        </div>
+      </div>
+    <div id="locs"></div>
+    <script>
+        
+        $('#textsearch').click(function(event) {
+		event.preventDefault(); // Prevent page from refreshing
+		var searchQuery = $('#searchInput').val();  
+        output =  "";  
+        $.getJSON("https://www.reddit.com/subreddits/search.json?q="+searchQuery+"&size=100&sort=title&sort_type=asc", function(data) { 
+            console.log(data);
+            var sortData = data.data.children.sort((a, b) => b.title - a.title);
+            $.each(sortData, function(i,item){
+                console.log(item);
+
+
+
+                         output +=    "  <div class='card'>"
+                            output += "<div class='card-aside'>"
+
+
+
+                                if( item.data.icon_img == "" || item.data.icon_img == null )
+                        {
+                            url =  'https://imgs.search.brave.com/okLBNfqxl80LUvjaMp_EYbQ0Cy8kAqOdwWMWKAC82U8/rs:fit:1125:1125:1/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzRhL2Nk/L2QyLzRhY2RkMjcw/NGIwMzM5YzFhNDdl/YTdhY2I3MzMyODJl/LnBuZw'
+                            output +=  "<img src="+url+" class='img-container'/>"
+                            
+                        }
+                        else{
+                            
+                            output +=  "<img src="+item.data.icon_img+" class='img-container'/>"                             
+                            }
+                            output += "<a class='card-skill'>"+item.data.name+"</a>"
+                            output += "<a class='card-skill-sub'> Subscribers   "+item.data.subscribers+"</a>"
+                            output += "</div>"
+
+                        output += "<div class='card-main'>"
+                        output += "<h3 class='card-title'><a>"+ item.data.title+"</a></h3>"
+                        output += "<p class='card-comment'>Public Description :"+item.data.public_description+" </p>"
+                        output += "<p class='card-excerpt'>"+item.data.description+"</p>"
+                        output += "<div class='card-meta'>"
+                        output += "<div class='score'>"
+                        output += "<i>URL : </i>"
+                        output += "<a href='item.data.url'>"+item.data.url+"</a>"
+                        output += "</div>"
+                        output += "<div class='score'>"
+                        output += "<i> CREATED DATE : </i>"
+                        if( item.data.created_utc == "" || item.data.created_utc == null )
+                            {
+                               output +=  "--/--/----"
+                            }
+                        else{
+                            var createdUtc = item.data.created_utc;
+                            var utcDate = new Date(createdUtc * 1000);
+                            var localDate = utcDate.toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' });;
+                            output +=  localDate;
+                            }   
+                       
+                        output += "</div>"
+                        output += "</div>"
+                        output += "</div>"
+
+                        output += "</div>"
+
+
+
+                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           
+                 $("#locs").html(output);               
+            });
+});  
+        });
+    
+    </script>
+</body>
+</html>
